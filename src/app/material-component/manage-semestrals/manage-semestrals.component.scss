@@ -1,0 +1,27 @@
+
+
+.float-right {
+    float: right;
+}
+
+mat-card {
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+}
+
+::ng-deep .highlight {
+    color: white;
+    background-color: #673AB7;
+}
+
+#description {
+    resize: vertical;
+    width: 100%;
+}
+
+.mat-column-description {
+    text-align: left !important;
+  }

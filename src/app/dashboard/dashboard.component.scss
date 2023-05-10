@@ -1,0 +1,121 @@
+.position-relative {
+  position: relative;
+}
+
+.add-contact {
+  position: absolute;
+  right: 17px;
+  top: 57px;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.column {
+  float: left;
+  width: 33.3%;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin: 8px;
+}
+
+.about-section {
+  padding: 50px;
+  text-align: center;
+  background-color: #474e5d;
+  color: white;
+}
+
+.container {
+  padding: 0 16px;
+}
+
+.container::after,
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.title {
+  color: black;
+  text-align: center !important;
+}
+
+.button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: #23527c;
+  background-color: #feb81c;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: #ddd8d8;
+}
+
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+
+  .float-right {
+    float: right;
+  }
+
+  mat-card {
+    padding: 20px;
+  }
+
+  ::ng-deep {
+    color: white;
+    background-color: #673ab7;
+  }
+
+  #description {
+    resize: vertical;
+    width: 100%;
+  }
+
+  .mat-column-description {
+    text-align: left !important;
+  }
+
+  
+
+}
+
+.mat-column-description {
+  text-align: left !important;
+}
+
+.mat-column-name {
+  text-align: left !important;
+}
+
+.read-more-link {
+  cursor: pointer;
+  color: #23527c;
+}

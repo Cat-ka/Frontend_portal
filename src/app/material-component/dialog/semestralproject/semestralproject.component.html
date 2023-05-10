@@ -1,0 +1,22 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row fxLayout="row">
+        <span>Detail semestrálnej práce</span>
+        <span class="spacer"></span>
+        <button class="mat-dialog-close" mat-icon-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+    <p><strong>Id semestrálnej práce: </strong><br> {{ semesterProject.id }}</p>
+    <p><strong>Názov semestrálnej práce:</strong><br> {{ semesterProject?.name }}</p>
+    <p><strong>Popis semestrálnej práce: </strong><br> {{ semesterProject?.description }}</p>
+    <p><strong>Termín ukončenia: </strong><br> {{ semesterProject?.term }}</p>
+    <p><strong>Tému vytvoril: </strong><br> {{ semesterProject?.createdBy }}</p>
+    <p><strong>Téma z predmetu: </strong><br> {{ semesterProject?.subjectName }}</p>
+    <p><strong>Téma priradená : </strong><br> {{ semesterProject?.userFirstName ? semesterProject?.userFirstName : '' }}
+        {{ semesterProject?.userLastName ? semesterProject?.userLastName : '' }}</p>
+    <p><strong>Odovzdaný súbor: </strong><br> {{ semesterProject?.file }}</p>
+
+</mat-dialog-content>

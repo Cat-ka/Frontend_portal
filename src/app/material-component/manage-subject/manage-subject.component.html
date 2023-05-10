@@ -1,0 +1,48 @@
+<mat-card>
+    <b>
+        <span>Správa predmetov</span>
+    </b>
+    <button mat-flat-button color="primary" class="float-right" (click)="handleAddAction()">        
+        <mat-icon>add_circle</mat-icon> Pridaj predmet
+    </button>
+</mat-card>
+<hr>
+<mat-card>
+    <mat-form-field appearance="standard">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" #input>
+    </mat-form-field>
+</mat-card>
+<hr>
+<div class="responsive_table">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="subjectNames">
+            <th mat-header-cell *matHeaderCellDef>Názov predmetu</th>
+            <td mat-cell *matCellDef="let subject of subjectNames">{{subject.subjectNames}}</td>
+        </ng-container>
+        <ng-container matColumnDef="teacherNames">
+            <th mat-header-cell *matHeaderCellDef>Učitelia</th>
+            <td mat-cell *matCellDef="let element">
+                <!-- <span *ngFor="let teacher of element.teacherNames.split(','); let isLast = last">{{teacher.trim()}}{{isLast ? '' : ', '}}</span> -->
+                <!-- <span *ngFor="let teacher of element.teacherNames; let isLast = last">{{teacher.trim()}}{{isLast ? '' : ', '}}</span> -->
+                <span *ngFor="let teacher of element.teacherNames; let isLast = last">{{teacher}}{{isLast ? '' : ', '}}</span>
+
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="edit">
+            <th mat-header-cell *matHeaderCellDef>Akcia</th>
+            <td mat-cell *matCellDef="let element" class="action-link">
+                <button mat-icon-button color="primary" matTooltip="Edit" (click)="handleEditAction(element)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="primary" matTooltip="Delete" (click)="handleDeleteAction(element)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+        <tr mat-row *matRowDef="let row;columns:displayedColumns;"></tr>
+    </table>
+</div>

@@ -1,0 +1,52 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row fxLayout="row">
+        <span>{{dialogData.action}} predmet</span>
+        <span class="spacer"></span>
+        <button class="mat-dialog-close" mat-icon-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="subjectForm">
+        <div fxFlex fxLayout="column">
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="standard" fxFlex>
+                    <mat-label>Názov predmetu</mat-label>
+                    <input matInput formControlName="subjectName" required >
+                    <mat-error *ngIf="subjectForm.controls.subjectName.touched && subjectForm.controls.subjectName.invalid">
+                        <span *ngIf="subjectForm.controls.subjectName.errors.required">Toto pole je povinné.</span>
+
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="standard" fxFlex>
+                    <mat-label>Učitelia</mat-label>
+                    <mat-select formControlName="teachers" multiple >
+                        <mat-option *ngFor="let teacher of teachers" [value]="teacher">{{ teacher.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!-- <div fxLayout="row wrap">
+                <mat-form-field appearance="standard" fxFlex>
+                    <mat-label>Users</mat-label>
+                    <mat-select formControlName="users" multiple>
+                        <mat-option *ngFor="let user of availableUsers" [value]="user">{{ user.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div> -->
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+        [disabled]="!(subjectForm.valid && subjectForm.dirty)">
+        <mat-icon>save</mat-icon> {{action}}
+    </button>
+    <button mat-raised-button color="warn" mat-dialog-close>
+        <mat-icon>cancel</mat-icon> Close
+    </button>
+</mat-dialog-actions>

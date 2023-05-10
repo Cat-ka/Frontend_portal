@@ -1,0 +1,63 @@
+<mat-card>
+    <b>
+        <span>Vytvorenie semestrálnej práce</span>
+    </b>
+</mat-card>
+<hr>
+<form [formGroup]="semestralProjectform">
+    <mat-card>
+        <div class="form-group">
+            <label for="name">Názov</label>
+            <input formControlName="name" class="form-control" id="name" required>
+            <mat-error *ngIf="semestralProjectform.controls.name.touched && semestralProjectform.controls.name.invalid">
+                <span *ngIf="semestralProjectform.controls.name.errors.required">Toto pole je povinné.</span>
+                <!-- <span *ngIf="semestralProjectform.controls.name.errors.pattern">Toto pole je nesprávne vyplnené.</span> -->
+            </mat-error>
+        </div>
+        <div class="form-group">
+            <label for="description">Popis</label>
+            <textarea formControlName="description" class="form-control" id="description" name="description" required></textarea>
+            <mat-error *ngIf="semestralProjectform.controls.name.touched && semestralProjectform.controls.name.invalid">
+                <span *ngIf="semestralProjectform.controls.name.errors.required">Toto pole je povinné.</span>
+                <!-- <span *ngIf="semestralProjectform.controls.name.errors.pattern">Toto pole je nesprávne vyplnené.</span> -->
+            </mat-error>
+        </div>
+    </mat-card>
+    <hr>
+    <mat-card>
+        <mat-card-content>
+            <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="50px">
+                <div fxFlex="40">
+                    <div class="form-group">
+                        <label for="subject">Predmet</label>
+                        <select formControlName="subjectId" class="form-control" id="subjectId" name="subject">
+                            <option value="zero" disabled selected>Vyberte predmet</option>
+                            <option *ngFor="let subject of subjectList" [value]="subject.id" >{{subject.subjectNames}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div fxFlex="20">
+                    <div class="form-group">
+                        <label for="switch">Zaktívnenie semestrálnej práce</label>
+                        <mat-slide-toggle [checked]="ToggleChange" (change)="toggleChange($event)">
+                            Uverejniť</mat-slide-toggle>
+                    </div>
+                </div>
+                <div fxFlex="20">                    
+                    <label for="term">Termín ukončenia</label>
+                    <mat-form-field>
+                        <mat-label>Dátum</mat-label>
+                        <input formControlName="term" matInput [matDatepicker]="picker">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+
+    </mat-card>
+</form>
+<hr>
+<button mat-flat-button color="primary" class="float-right" (click)="handleAddAction()">
+    <mat-icon>add_circle</mat-icon> Pridaj predmet
+</button>

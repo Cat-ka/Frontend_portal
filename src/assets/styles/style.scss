@@ -1,0 +1,40 @@
+/*
+Template Name: Material Pro Admin
+Author: Themedesigner
+Email: niravjoshi87@gmail.com
+File: scss
+*/
+/**
+ * Table Of Content
+ *
+ * 	1. Globals
+ *	2. Headers
+ *	3. Navigations
+ *	4. Banners
+ *	5. Footers
+ *	6. app
+ *	7. Widgets
+ *	8. Custom Templates
+ */
+
+// @use "@material/checkbox"; // Required only for data table with row selection.
+// @use "@material/icon-button"; // Required only for data table with column sorting.
+// @use "@material/data-table/data-table";
+
+
+// @include checkbox.core-styles;
+// @include icon-button.core-styles;
+// @include data-table.core-styles;
+//@include data-table.theme-baseline;
+
+@import 'variable';
+@import 'spinner';
+@import 'app';
+@import 'header';
+@import 'pages';
+@import 'sidebar';
+@import 'responsive';
+
+@import "../styles/icons/material-design-iconic-font/css/materialdesignicons.min.css";
+
+
