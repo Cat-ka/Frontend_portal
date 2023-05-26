@@ -12,63 +12,103 @@ import { MenuItems } from 'src/app/shared/menu-items';
 import { SubjectComponent } from '../dialog/subject/subject.component';
 import { Teacher } from 'src/app/model/teacher';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
-
+import { UserSemestralsService } from 'src/app/services/user-semestrals.service';
 
 @Component({
   selector: 'app-manage-subject',
   templateUrl: './manage-subject.component.html',
-  styleUrls: ['./manage-subject.component.scss']
+  styleUrls: ['./manage-subject.component.scss'],
 })
 export class ManageSubjectComponent implements OnInit {
-
   displayedColumns: string[] = ['subjectNames', 'teacherNames', 'edit'];
   dataSource: any;
   responseMessage: any;
-  isAdmin: boolean = false;
-  isTeacher: boolean = false;
-  availableTeachers: Teacher[] = [];
+  role: any;
+  token: any = localStorage.getItem('token');
+  currentUser: {
+    id: number;
+    name: string;
+    role: string;
+  } = {
+    id: 0,
+    name: '',
+    role: '',
+  };
 
-  constructor(private subjectService: SubjectService,
+  constructor(
+    private subjectService: SubjectService,
     private ngxService: NgxUiLoaderService,
     private dialog: MatDialog,
     private snackbarService: SnackbarService,
     private router: Router,
-    private authService: AuthService,
-    private menuItems: MenuItems,
-    private userService: UserService) { }
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
     this.ngxService.start();
+    this.getCurrentUserInfo();
     this.tableData();
   }
 
+  getCurrentUserInfo() {
+    this.userService.getCurrentUserInfo().subscribe(
+      (response: any) => {
+        this.currentUser.id = response.id;
+        this.currentUser.name = response.name;
+        this.currentUser.role = response.role;
+        console.log(this.currentUser);
+      },
+      (error: any) => {
+        console.error(
+          'Údaje o prihlásenom používateľovi nie sú dostupné.',
+          error
+        );
+      }
+    );
+  }
+
   tableData() {
-    this.subjectService.getSubject().subscribe((response: any) => {
-      this.ngxService.stop();
-      const subjects = response.map((subject: any) => {
-        // const teachers = subject.teacherNames.join(", ");
-        const teachers = subject.teacherNames instanceof Array ? subject.teacherNames.join(", ") : subject.teacherNames;
-        const teacherNamesArray = teachers.split(',').map((name: string) => name.trim());
+    this.subjectService.getSubject().subscribe(
+      (response: any) => {
+        this.ngxService.stop();
+        let subjects = response;
 
+        if (this.currentUser.role === 'teacher') {
+          subjects = subjects.filter((subject: any) =>
+            subject.teacherNames.includes(this.currentUser.name)
+          );
+        }
 
-        return {
-          id: subject.id,
-          subjectNames: subject.subjectNames,
-          teacherNames: teacherNamesArray
-        };
-      });
-      this.dataSource = new MatTableDataSource(subjects);
-    }, (error: any) => {
-      this.ngxService.stop();
-      console.log(error.error?.message);
-      if (error.error?.message) {
-        this.responseMessage = error.error?.message;
+        subjects = subjects.map((subject: any) => {
+          const teachers =
+            subject.teacherNames instanceof Array
+              ? subject.teacherNames.join(', ')
+              : subject.teacherNames;
+          const teacherNamesArray = teachers
+            .split(',')
+            .map((name: string) => name.trim());
+          return {
+            id: subject.id,
+            subjectNames: subject.subjectNames,
+            teacherNames: teacherNamesArray,
+          };
+        });
+        this.dataSource = new MatTableDataSource(subjects);
+      },
+      (error: any) => {
+        this.ngxService.stop();
+        console.log(error.error?.message);
+        if (error.error?.message) {
+          this.responseMessage = error.error?.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericError;
+        }
+        this.snackbarService.openSnackBar(
+          this.responseMessage,
+          GlobalConstants.error
+        );
       }
-      else {
-        this.responseMessage = GlobalConstants.genericError;
-      }
-      this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
-    })
+    );
   }
 
   applyFilter(event: Event) {
@@ -79,84 +119,77 @@ export class ManageSubjectComponent implements OnInit {
   handleAddAction() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
-      action: 'Pridať'
+      action: 'Pridať',
     };
-    dialogConfig.width = "850px";
+    dialogConfig.width = '850px';
     const dialogRef = this.dialog.open(SubjectComponent, dialogConfig);
     this.router.events.subscribe(() => {
       dialogRef.close();
     });
-    const sub = dialogRef.componentInstance.onAddSubject.subscribe((response) => {
-      this.tableData();
-    })
+    const sub = dialogRef.componentInstance.onAddSubject.subscribe(
+      (response) => {
+        this.tableData();
+      }
+    );
   }
 
   handleEditAction(values: any) {
-    // let teacherNamesString = values.teacherNames;
-    // let teacherNamesArray = teacherNamesString.split(',').map((name: string) => name.trim());
-    // values.teacherNames = teacherNamesArray;
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       action: 'Edit',
       data: values,
-      //id: values.id,
-      //subjectName: values.subjectNames,
-      //teachers:values.teacherNames
     };
-    console.log(dialogConfig.data)
-    dialogConfig.width = "850px";
+    console.log(dialogConfig.data);
+    dialogConfig.width = '850px';
     const dialogRef = this.dialog.open(SubjectComponent, dialogConfig);
     this.router.events.subscribe(() => {
       dialogRef.close();
     });
-
-    const sub = dialogRef.componentInstance.onAddSubject.subscribe((response) => {
-      this.tableData();
-    })
+    const sub = dialogRef.componentInstance.onAddSubject.subscribe(
+      (response) => {
+        this.tableData();
+      }
+    );
   }
 
   handleDeleteAction(element: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
-      message: 'chcete vymazať predmet s názvom: ' + element.subjectNames + " ?",
-      confirmation: true
-    }
+      message:
+        'chcete vymazať predmet s názvom: ' + element.subjectNames + ' ?',
+      confirmation: true,
+    };
     const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
-    const sub = dialogRef.componentInstance.onEmitStatusChange.subscribe((response) => {
-      this.ngxService.start();
-      this.deleteSubject(element.id);
-      dialogRef.close();
-    })
+    const sub = dialogRef.componentInstance.onEmitStatusChange.subscribe(
+      (response) => {
+        this.ngxService.start();
+        this.deleteSubject(element.id);
+        dialogRef.close();
+      }
+    );
   }
 
   deleteSubject(id: any) {
-    this.subjectService.delete(id).subscribe((response: any) => {
-      this.ngxService.stop();
-      this.tableData();
-      this.responseMessage = response?.message;
-      this.snackbarService.openSnackBar(this.responseMessage, "success");
-    }, (error: any) => {
-      this.ngxService.stop();
-      console.log(error.error?.message);
-      if (error.error?.message) {
-        this.responseMessage = error.error?.message;
+    this.subjectService.delete(id).subscribe(
+      (response: any) => {
+        this.ngxService.stop();
+        this.tableData();
+        this.responseMessage = response?.message;
+        this.snackbarService.openSnackBar(this.responseMessage, 'success');
+      },
+      (error: any) => {
+        this.ngxService.stop();
+        console.log(error.error?.message);
+        if (error.error?.message) {
+          this.responseMessage = error.error?.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericError;
+        }
+        this.snackbarService.openSnackBar(
+          this.responseMessage,
+          GlobalConstants.error
+        );
       }
-      else {
-        this.responseMessage = GlobalConstants.genericError;
-      }
-      this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
-    })
+    );
   }
-
-  getAvailableTeachers() {
-    // Use the user service to get the available users
-    this.userService.getAllTeachersWrap().subscribe((response: any) => {
-      // Assign the response to the availableUsers property
-      this.availableTeachers = response;
-    }, (error: any) => {
-      console.log(error);
-      // Handle errors if necessary
-    });
-  }
-
 }

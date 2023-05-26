@@ -25,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ManageSubjectComponent } from './material-component/manage-subject/manage-subject.component';
 
+
 const ngxUiLoaderConfig:NgxUiLoaderConfig={
   text:"Načítavam...",
   textColor:"#FFFFFF",
@@ -62,7 +63,7 @@ const ngxUiLoaderConfig:NgxUiLoaderConfig={
     MatFormFieldModule,
     MatInputModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
-    MatPaginatorModule
+    MatPaginatorModule,
   ],
   providers: [HttpClientModule, {provide:HTTP_INTERCEPTORS,useClass:TokenInterceptorInterceptor,multi:true}],
   bootstrap: [AppComponent]

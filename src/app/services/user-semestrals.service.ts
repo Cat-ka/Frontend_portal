@@ -35,4 +35,6 @@ export class UserSemestralsService {
   getPublishedProjectById(id: number): Observable<any> {
     return this.httpClient.get(this.url + "/semester/project/" + id);
   }
+
+  
 }

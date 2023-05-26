@@ -113,15 +113,24 @@
             </ng-container>
 
             <!-- Stĺpec súbor -->
-            <!-- <ng-container matColumnDef="fileData">
+            <ng-container matColumnDef="fileData">
                 <th mat-header-cell *matHeaderCellDef> Súbor </th>
                 <td mat-cell *matCellDef="let element"> {{element?.fileData}} </td>
+            </ng-container>
+
+            <!-- <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let element" class="action-link">
+                    <button (click)="fileInput.click()">Nahrať súbor</button>
+                    <input type="file" #fileInput style="display: none;" (change)="onFileSelected(element.id, $event)">
+                </td>
             </ng-container> -->
 
             <ng-container matColumnDef="action">
                 <th mat-header-cell *matHeaderCellDef>Action</th>
                 <td mat-cell *matCellDef="let element" class="action-link">
                     <button (click)="fileInput.click()">Nahrať súbor</button>
+                    <!-- <input type="number" placeholder="Semester project ID" [(ngModel)]="element.id"> --> 
                     <input type="file" #fileInput style="display: none;" (change)="onFileSelected(element.id, $event)">
                 </td>
             </ng-container>
@@ -197,7 +206,7 @@
             <!-- Stĺpec súbor pre učiteľa -->
             <ng-container matColumnDef="fileData">
                 <th mat-header-cell *matHeaderCellDef> Súbor </th>
-                <td mat-cell *matCellDef="let element"> {{element?.fileData}} </td>
+                <td mat-cell *matCellDef="let element"> {{element?.fileName}} </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

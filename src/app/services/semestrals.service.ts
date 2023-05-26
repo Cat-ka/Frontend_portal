@@ -38,9 +38,15 @@ export class SemestralsService {
     );    
   }
 
-  uploadFile(data: any) {
+  /* uploadFile(data: any) {
     return this.httpClient.post(this.url + '/semester/upload', data, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
-  }
+  } */
+
+  uploadFile(data: any) {
+    return this.httpClient.post(this.url + '/file/upload', data, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
+    });
+  } 
 }

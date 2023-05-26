@@ -11,9 +11,12 @@ import { SemestralsService } from '../services/semestrals.service';
 import { UserSemestralsService } from '../services/user-semestrals.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { SemesterProject } from '../model/semester-project';
+import { SemesterFile } from '../model/semester-file';
 import { SemestralprojectComponent } from '../material-component/dialog/semestralproject/semestralproject.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { FileService } from '../services/file.service';
+//import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,6 +33,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   dataSource: any;
   currentUserId!: number;
   displayedColumns: string[] | undefined;
+  selectedFile: File | undefined;
+  projectId!: number;
+  projects: SemesterProject[] = [];
+  filesArray: SemesterFile[] = [];
+  filesMap = new Map<number, SemesterFile[]>();
 
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
 
@@ -43,6 +51,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private semestralsService: SemestralsService,
     private userSemestralsService: UserSemestralsService,
     private dialog: MatDialog,
+    private fileService: FileService,    
+
   ) {
     this.ngxService.start();
     //this.dashboardData();
@@ -60,9 +70,24 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     if (this.role === 'user') {
-      this.displayedColumns = ['name', 'description', 'term', 'subject', 'createdBy', 'fileName', 'action',];
+      this.displayedColumns = [
+        'name',
+        'description',
+        'term',
+        'subject',
+        'createdBy',
+        'fileName',
+        'action',
+      ];
     } else {
-      this.displayedColumns = ['name', 'description', 'term', 'subject', 'user', 'fileData',];
+      this.displayedColumns = [
+        'name',
+        'description',
+        'term',
+        'subject',
+        'user',
+        'fileData',
+      ];
     }
     this.dataSource = new MatTableDataSource();
     this.dataSource.paginator = this.paginator;
@@ -132,6 +157,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           //console.log(response);
           this.dataSource = new MatTableDataSource(response);
           this.dataSource.paginator = this.paginator;
+          
         },
         (error: any) => {
           this.ngxService.stop();
@@ -175,11 +201,23 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     formData.append('fileData', fileData);
 
     this.semestralsService.uploadFile(formData).subscribe((response) => {
-
       //console.log(response);
       // tu môžete spracovať odpoveď od serveru
     });
   }
+
+ /*  onFileSelected(event:any) {
+    this.selectedFile = <File>event.target.files[0];
+  }
+
+  onSubmit() {
+    const formData = new FormData();
+    formData.append('file', this.selectedFile, this.selectedFile.name);
+    formData.append('semester_project_id', String(this.projectId));
+    this.fileService.uploadFile(formData).subscribe(response => {
+      console.log(response);
+    });
+  } */
 
   openProjectDetails(element: any) {
     this.userSemestralsService.getPublishedProjectById(element.id).subscribe(
@@ -188,14 +226,45 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           panelClass: 'dialog-content',
           width: '700px',
           data: {
-            semesterProject: result
-          }
+            semesterProject: result,
+          },
         });
       },
       (error: any) => {
         console.log(error);
-        this.snackbarService.openSnackBar('Chyba pri načítaní semestrálnej práce', 'error');
+        this.snackbarService.openSnackBar(
+          'Chyba pri načítaní semestrálnej práce',
+          'error'
+        );
       }
     );
   }
-}
+
+  // downloadFile(fileId: number) {
+  //   this.fileService.downloadFile(fileId).subscribe((file: Blob) => {
+  //     var fileUrl = URL.createObjectURL(file);
+  //     saveAs(fileUrl, 'fileName.extension'); // Replace 'fileName.extension' with the actual file name and extension
+  //   });
+  // }
+
+  getFilesForProject(projectId: number): void {
+    this.fileService.getFileList(projectId).subscribe(
+      files => {
+        const project = this.dataSource.data.find((item: any) => item.id === projectId);
+        if(project) {
+          project.files = files;
+        }
+      },
+      error => {
+        console.error('There was an error!', error);
+      }
+    );
+  }
+  
+  }
+
+
+
+
+
+

@@ -76,4 +76,8 @@ export class UserService {
       );
     }
 
+    getCurrentUserInfo() {
+      return this.httpClient.get(this.url + "/user/getCurrentUserInfo");
+    }
+
 }
